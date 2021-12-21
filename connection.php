@@ -13,7 +13,7 @@
 	$host = 'localhost';
 	$username = "root";
 	$password = '';
-	$db = 'augment';
+	$db = 'testdb';
  
 	// Create connection
 	$conn = new mysqli($host, $username, $password,$db);
