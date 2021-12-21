@@ -1,2 +1,2 @@
 # singlePageCurdOPeration
-single page create reduce update delete operation
+single page create remove update delete operation
