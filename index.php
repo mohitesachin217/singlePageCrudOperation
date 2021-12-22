@@ -7,24 +7,33 @@ require_once('connection.php');
   
   if(isset($_POST) && !empty($_POST)){
     
+    
     $term = filter_var($_POST['term'], FILTER_SANITIZE_STRING);
     $description = filter_var($_POST['description'], FILTER_SANITIZE_STRING);
     $relation = filter_var($_POST['relation'], FILTER_SANITIZE_STRING);
     $image  = '';
     $details = filter_var($_POST['details'], FILTER_SANITIZE_STRING);
+    $resource = '';
 
-    $sql = "INSERT INTO `terms` (`wording`,`description`,`relation`,`image`,`details`) VALUES('$term','$description','$relation','$image','$details')";
-    $resource = mysqli_query($conn,$sql);
+    if(isset($_POST['id']) && !empty($_POST['id']) ){
+      $id = filter_var($_POST['id'],FILTER_SANITIZE_NUMBER_INT);
+      $sql ="UPDATE `terms` SET `wording` = '$term',`description` = '$description',`relation` = '$relation',`image`= '$image', `details` = '$details' WHERE `id` = $id";
+      $resource = mysqli_query($conn,$sql);
+      $txt = "Term updated successfully";
+    }else{
+      $sql = "INSERT INTO `terms` (`wording`,`description`,`relation`,`image`,`details`) VALUES('$term','$description','$relation','$image','$details')";
+      $resource = mysqli_query($conn,$sql);
+      $txt = "Term added successfully";
+    }
 
 
     if($resource){
       $message['fail']    = '';
-      $message['success'] =  "Term added successful";
+      $message['success'] =  $txt;
     }else{
       $message['success'] = '';
       $message['fail']    = "Failed to add the term";
     }
-
   }
 
 
@@ -45,6 +54,7 @@ require_once('connection.php');
 
     $row = mysqli_fetch_assoc($resource);
 
+    $id = $_GET['id'];
 
     if($resource){
       $message['fail']    = '';
@@ -99,14 +109,11 @@ require_once('connection.php');
 
 
 
-    <title>Hello, world!</title>
+    <title>Sudoku</title>
   </head>
   <body>
-
     <div class="" style="width:50%;margin: 150px auto;">
-          
           <?php 
-
               if(isset($message['success'])&& $message['success']!=''){
                 ?>
                     <div class="alert alert-primary" role="alert">
@@ -124,8 +131,6 @@ require_once('connection.php');
 
                 <?php
               }
-
-
           ?>
 
           <div class="form-group">
@@ -158,7 +163,7 @@ require_once('connection.php');
           </div>
 
           <div class="form-group">
-            <input type="hidden" class="form-control" id="id" name="id" value="<?php echo @$row['id'];?>">
+            <input type="hidden" class="form-control" id="id" name="id" value="<?php echo @$id;?>">
           </div>
 
           <div class="form-group">
